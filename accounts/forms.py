@@ -6,7 +6,7 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         # Forma prideda visus defaultinius laukus + age iš sukurto modelio.
-        fields = UserCreationForm.Meta.fields + ("age")
+        fields = UserCreationForm.Meta.fields + ("age",)
 
 
 class CustomUserChangeForm(UserChangeForm):
