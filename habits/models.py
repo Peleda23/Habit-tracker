@@ -12,6 +12,7 @@ class Heatmap(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        # Vienas useris gali tureti viena tema vienam kalendoriui
         unique_together = ("user", "topic")
 
     def __str__(self):
