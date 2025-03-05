@@ -17,7 +17,7 @@
     <body>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'home' %}">Habbit Tracker</a>
+                <a class="navbar-brand" href="{% url 'home' %}">Habit Tracker</a>
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
@@ -34,7 +34,10 @@
                         </li>
                         {% if user.is_authenticated %}
                             <li>
-                                <a href="#" class="nav-link px-2 link-dark">+ New</a>
+                                <a href="{% url 'heatmap_list' %}" class="nav-link px-2 link-dark">Home</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'create_heatmap' %}" class="nav-link px-2 link-dark">New Tracker</a>
                             </li>
                         </ul>
                         <div class="mr-auto">
