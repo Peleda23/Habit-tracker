@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+    My Habit Tracker
+{% endblock title %}
+{% block content %}
+    <h1>My Habit Tracker</h1>
+    {% if heatmaps %}
+        <ul>
+            {% heatmap in heatmaps %}
+            <li>
+                <a href="{% url 'calendar' heatmap.id %}">{{ heatmap.topic }} ({{ heatmap.start_date }} - {{ heatmap.end_date }})</a>
+            </li>
+        </ul>
+    {% else %}
+        <p>
+            No tracker yet. <a href="{% url 'create_heatmap' %}">Create one</a>!
+        </p>
+    {% endif %}
+{% endblock content %}
