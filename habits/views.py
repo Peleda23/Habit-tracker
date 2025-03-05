@@ -76,4 +76,69 @@ def calendar_view(request, heatmap_id):
         )
     )
 
-    fig.update_layout()
+    fig.update_layout(
+        title=f"{heatmap.topic} - Habit Tracker ({heatmap.start_date} to {heatmap.end_date})",
+        height=400,
+        width=1000,
+        clickmode="event+select",
+    )
+
+    graph_json = fig.to_json()
+
+    return render(
+        request, "calendar.html", {"graph_json": graph_json, "heatmap_id": heatmap_id}
+    )
+
+
+@login_required
+def update_calendar(request, heatmap_id):
+    if request.method == "POST":
+        try:
+            heatmap = Heatmap.objects.get(id=heatmap_id, user=request.user)
+            data = json.loads(request.body)
+            click_data = data.get("clickData")
+
+            if click_data:
+                point = click_data["points"][0]
+                x = point["x"]
+                y = point["y"]
+                week_num = int(x.split()[1]) - 1
+                day_num = ["Mon", "Tue", "Wed", "Tue", "Fri", "Sat", "Sun"].index(y)
+
+                start_date = datetime.combine(heatmap.start_date, datetime.min.time())
+                days_count = (heatmap.end_date - heatmap.start_date).days = 1
+                day_index = week_num * 7 + day_num - start_date.weekday()
+
+                if 0 <= day_index < days_count:
+                    selected_date = (start_date + timedelta(days=day_index)).date()
+                    obj, created = CalendarData.objects.get_or_create(
+                        heatmap=heatmap, date=selected_date, defaults={"value": 0}
+                    )
+                    new_value = (obj.value + 1) % 3
+                    obj.value = new_value
+                    obj.save()
+
+                    return JsonResponse(
+                        {
+                            "status": "succses",
+                            "date": str(selected_date),
+                            "value": new_value,
+                        }
+                    )
+        except Heatmap.DoesNotExist:
+            return JsonResponse(
+                {"status": "error", "message": "Heatmap not found"}, status=404
+            )
+    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+
+
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("heatmap_list")
+    else:
+        form = UserCreationForm()
+    return render(request, "registration/register.html", {"form": form})
