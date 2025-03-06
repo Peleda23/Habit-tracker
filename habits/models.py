@@ -28,7 +28,7 @@ class CalendarData(models.Model):
 
     class Meta:
         db_table = "calendar_data"
-        unique_together = ("heatmap", "data")
+        unique_together = ("heatmap", "date")
 
     def __str__(self):
         return f"{self.heatmap.topic} - {self.date}: {self.value}"
