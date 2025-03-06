@@ -6,10 +6,11 @@
     <h1>My Habit Tracker</h1>
     {% if heatmaps %}
         <ul>
-            {% heatmap in heatmaps %}
+            {% for heatmap in heatmaps %}
             <li>
                 <a href="{% url 'calendar' heatmap.id %}">{{ heatmap.topic }} ({{ heatmap.start_date }} - {{ heatmap.end_date }})</a>
             </li>
+            {% endfor %}
         </ul>
     {% else %}
         <p>
