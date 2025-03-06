@@ -128,5 +128,5 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 
 # Po login ar logout busime nukreipti į home page.
-LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "home"
+LOGIN_REDIRECT_URL = "heatmap_list"
+LOGOUT_REDIRECT_URL = "login"
