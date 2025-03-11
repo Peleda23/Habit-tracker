@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>
             {% block title %}
-                Newspaper App
+                Habit App
             {% endblock title %}
         </title>
         <!-- Bootstrap CSS -->
@@ -15,9 +15,9 @@
               crossorigin="anonymous">
     </head>
     <body>
-        {% comment %} <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'heatmap_list' %}">Habit Tracker</a>
+                <a class="navbar-brand" href="#">Habit Tracker</a>
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
@@ -34,10 +34,10 @@
                         </li>
                         {% if user.is_authenticated %}
                             <li>
-                                <a href="{% url 'heatmap_list' %}" class="nav-link px-2 link-dark">Home</a>
+                                <a href="#" class="nav-link px-2 link-dark">Home</a>
                             </li>
                             <li>
-                                <a href="{% url 'create_heatmap' %}" class="nav-link px-2 link-dark">New Tracker</a>
+                                <a href="#" class="nav-link px-2 link-dark">New Tracker</a>
                             </li>
                         </ul>
                         <div class="mr-auto">
@@ -80,7 +80,7 @@
             </div>
         </nav>
         <main>
-            <div class="container"> {% endcomment %}
+            <div class="container"> 
                 {% block content %}
                 {% endblock content %}
             </div>
