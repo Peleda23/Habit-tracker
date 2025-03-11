@@ -2,33 +2,31 @@ from django.db import models
 from accounts.models import CustomUser
 
 
-class Heatmap(models.Model):
+class Habit(models.Model):
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)  # Added manually
+    modified = models.DateTimeField(auto_now=True)  # Added manually
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "habits"
+
+
+class HabitEntry(models.Model):
     user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="heatmaps"
+        CustomUser, on_delete=models.DO_NOTHING, related_name="habit_entries"
     )
-    topic = models.CharField(max_length=100)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        # Vienas useris gali tureti viena tema vienam kalendoriui
-        unique_together = ("user", "topic")
+    habit = models.ForeignKey(Habit, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)  # Added manually
+    modified = models.DateTimeField(auto_now=True)  # Added manually
 
     def __str__(self):
-        return f"{self.user.username} - {self.topic}"
-
-
-class CalendarData(models.Model):
-    heatmap = models.ForeignKey(
-        Heatmap, on_delete=models.CASCADE, related_name="data_pionts"
-    )
-    date = models.DateField()
-    value = models.IntegerField(choices=[(0, "Zero"), (1, "One"), (2, "Two")])
+        return f"{self.habit.name} - {self.created.strftime('%Y-%m-%d')} - {'Yes' if self.completed else 'No'}"
 
     class Meta:
-        db_table = "calendar_data"
-        unique_together = ("heatmap", "date")
-
-    def __str__(self):
-        return f"{self.heatmap.topic} - {self.date}: {self.value}"
+        unique_together = ("user", "habit", "created")

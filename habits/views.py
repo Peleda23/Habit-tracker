@@ -1,144 +1,98 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
-from .models import Heatmap, CalendarData
-from .forms import HeatmapForm
-import plotly.graph_objects as go
-import numpy as np
-from datetime import datetime, timedelta
-import json
+from django.utils import timezone
+from .models import Habit, HabitEntry
+from .forms import HabitEntryForm
+from . import utils
+import plotly.express as px
+import calendar
 
 
 @login_required
-def heatmap_list_view(request):
-    heatmaps = Heatmap.objects.filter(user=request.user)
-    return render(request, "heatmap_list.html", {"heatmaps": heatmaps})
+def daily_habit_input(request):
+    today = timezone.now().date()
+    habits = Habit.objects.filter(user=request.user)
 
+    if not habits.exists():
+        return render(request, "no_habits.html")
 
-@login_required
-def create_heatmap_view(request):
     if request.method == "POST":
-        form = HeatmapForm(request.POST)
-        if form.is_valid():
-            heatmap = form.save(commit=False)
-            heatmap.user = request.user
-            heatmap.save()
-            return redirect("calendar", heatmap_id=heatmap.id)
-        else:
-            form = HeatmapForm()
-        return render(request, "create_heatmap.html", {"form": form})
+        for habit in habits:
+            form = HabitEntryForm(request.POST, prefix=str(habit.id))
+            if form.is_valid():
+                entry, created = HabitEntry.objects.get_or_create(
+                    user=request.user,
+                    habit=habit,
+                    created__date=today,
+                    defaults={"completed": form.cleaned_data["completed"]},
+                )
+                if not created:
+                    entry.completed = form.cleaned_data["completed"]
+                    entry.save()
+        return redirect("habit_heatmap")
+
+    forms = {habit: HabitEntryForm(prefix=str(habit.id)) for habit in habits}
+    context = {"forms": forms, "today": today}
+    return render(request, "daily_habit_input.html", context)
 
 
 @login_required
-def calendar_view(request, heatmap_id):
-    try:
-        heatmap = Heatmap.objects.get(id=heatmap_id, user=request.user)
-    except Heatmap.DoesNotExist:
-        return redirect("heatmap_list")
+def habit_heatmap(request):
+    habits = Habit.objects.filter(user=request.user)
+    if not habits.exists():
+        return render(request, "no_habits.html")
 
-    start_date = datetime.combine(heatmap.start_date, datetime.min.time())
-    days_count = (heatmap.end_date - heatmap.start_date).days + 1
-    dates = [start_date + timedelta(days=x) for x in range(days_count)]
+    # Define date range: past year to now
+    now = timezone.now()
+    start_date = now - timezone.timedelta(days=364)
+    date_range = utils.date_range(start_date, now)
 
-    db_data = CalendarData.objects.filter(heatmap=heatmap)
-    click_data = {data.date: data.value for data in db_data}
-    values = [click_data.get(date.date(), 0) for date in dates]
+    # Calculate the number of weeks (columns) needed
+    num_days = len(date_range)  # 365 days
+    num_weeks = (num_days + 6) // 7  # Ceiling division to get full weeks (52 or 53)
 
-    weeks_count = (days_count + start_date.weekday() + 6) // 7
-    z = np.zeros((7, weeks_count))
-    first_day_offset = start_date.weekday()
+    # Generate day names starting from the first day
+    first_day = date_range[0].weekday()
+    day_names = list(calendar.day_name)
+    days = day_names[first_day:] + day_names[:first_day]
 
-    for week in range(weeks_count):
-        for day in range(7):
-            pos = week * 7 + day - first_day_offset
-            if 0 <= pos < days_count:
-                z[day][week] = values[pos]
+    # X-axis labels (start of each week)
+    x_labels = [date_range[i].date() for i in range(0, num_days, 7)]
 
-    fig = go.Figures(
-        data=go.Heatmap(
-            z=z,
-            x=[f"Week {i + 1}" for i in range(weeks_count)],
-            y=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            colorscale="Virvidis",
-            showscale=True,
-            text=[
-                [
-                    f"{start_date + timedelta(days=i)}"
-                    if (i >= first_day_offset and i < days_count)
-                    else ""
-                    for i in range(week * 7, week * 7 + 7)
-                ]
-                for week in range(weeks_count)
-            ],
-            hoverinfo="text",
+    # Generate a heatmap for each habit
+    habit_charts = []
+    for habit in habits:
+        entries = HabitEntry.objects.filter(user=request.user, habit=habit).order_by(
+            "created"
         )
-    )
 
-    fig.update_layout(
-        title=f"{heatmap.topic} - Habit Tracker ({heatmap.start_date} to {heatmap.end_date})",
-        height=400,
-        width=1000,
-        clickmode="event+select",
-    )
+        # Initialize 2D list with zeros for 7 rows (days) and num_weeks columns
+        counts = [[0] * num_weeks for _ in range(7)]
 
-    graph_json = fig.to_json()
+        # Populate counts by mapping dates to week and day indices
+        for i, dt in enumerate(date_range):
+            week_number = i // 7
+            day_number = dt.weekday()
+            entry = entries.filter(created__date=dt.date()).first()
+            counts[day_number][week_number] = 1 if entry and entry.completed else 0
 
-    return render(
-        request, "calendar.html", {"graph_json": graph_json, "heatmap_id": heatmap_id}
-    )
+        # Create Plotly heatmap
+        fig = px.imshow(
+            counts,
+            x=x_labels,
+            y=days,
+            color_continuous_scale=["white", "green"],
+            height=320,
+            width=1300,
+        )
+        fig.update_traces(xgap=5, ygap=5)
+        fig.update_layout(
+            plot_bgcolor="white", title_text=habit.name
+        )  # Add habit name as title
 
+        # Convert to HTML and store with habit name
+        chart_html = fig.to_html()
+        habit_charts.append({"name": habit.name, "chart": chart_html})
 
-@login_required
-def update_calendar(request, heatmap_id):
-    if request.method == "POST":
-        try:
-            heatmap = Heatmap.objects.get(id=heatmap_id, user=request.user)
-            data = json.loads(request.body)
-            click_data = data.get("clickData")
-
-            if click_data:
-                point = click_data["points"][0]
-                x = point["x"]
-                y = point["y"]
-                week_num = int(x.split()[1]) - 1
-                day_num = ["Mon", "Tue", "Wed", "Tue", "Fri", "Sat", "Sun"].index(y)
-
-                start_date = datetime.combine(heatmap.start_date, datetime.min.time())
-                days_count = (heatmap.end_date - heatmap.start_date).days = 1
-                day_index = week_num * 7 + day_num - start_date.weekday()
-
-                if 0 <= day_index < days_count:
-                    selected_date = (start_date + timedelta(days=day_index)).date()
-                    obj, created = CalendarData.objects.get_or_create(
-                        heatmap=heatmap, date=selected_date, defaults={"value": 0}
-                    )
-                    new_value = (obj.value + 1) % 3
-                    obj.value = new_value
-                    obj.save()
-
-                    return JsonResponse(
-                        {
-                            "status": "succses",
-                            "date": str(selected_date),
-                            "value": new_value,
-                        }
-                    )
-        except Heatmap.DoesNotExist:
-            return JsonResponse(
-                {"status": "error", "message": "Heatmap not found"}, status=404
-            )
-    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
-
-
-def register(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("heatmap_list")
-    else:
-        form = UserCreationForm()
-    return render(request, "registration/register.html", {"form": form})
+    context = {"habit_charts": habit_charts}
+    return render(request, "habit_heatmap.html", context)

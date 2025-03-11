@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Daily Habit Input{% endblock %}
+{% block content %}
+
+    <h1>Log Your Habits for {{ today }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for habit, form in forms.items %}
+            <h3>{{ habit.name }}</h3>
+            {{ form.as_p }}
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+    <p><a href="{% url 'habit_heatmap' %}">View Heatmap</a></p>
+{% endblock %}

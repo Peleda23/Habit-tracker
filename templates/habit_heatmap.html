@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Habit Tracker{% endblock %}
+{% block content %}
+
+
+<h1>My Habit Tracker</h1>
+{% if habit_charts %}
+    {% for habit in habit_charts %}
+        <div class="habit-container">
+            <h2>{{ habit.name }}</h2>
+            {{ habit.chart|safe }}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No habit data to display.</p>
+{% endif %}
+<p><a href="{% url 'daily_habit_input' %}">Log Today's Habits</a></p>
+   
+{% endblock %}

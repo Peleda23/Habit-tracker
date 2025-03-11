@@ -17,19 +17,10 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth import views as auth_views
-from habits import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.heatmap_list_view, name="heatmap_list"),
-    path("calendar/create/", views.create_heatmap_view, name="create_heatmap"),
-    path("calendar/<int:heatmap_id>/", views.calendar_view, name="calendar"),
-    path(
-        "calendar/<int:heatmap_id>/update/",
-        views.update_calendar,
-        name="update_calendar",
-    ),
+    path("", include("habits.urls")),
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
 ]

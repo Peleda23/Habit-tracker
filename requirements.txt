@@ -3,6 +3,8 @@ click==8.1.8
 colorama==0.4.6
 cssbeautifier==1.15.2
 Django==5.1.5
+django-extensions==3.2.3
+django-model-utils==5.0.0
 djlint==1.36.4
 EditorConfig==0.17.0
 jsbeautifier==1.15.2
