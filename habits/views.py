@@ -3,96 +3,186 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Habit, HabitEntry
 from .forms import HabitEntryForm
-from . import utils
-import plotly.express as px
-import calendar
+import numpy as np
+
+# from . import utils
+from plotly_calplot import calplot
+import pandas as pd
+import plotly.graph_objects as go
 
 
-@login_required
-def daily_habit_input(request):
-    today = timezone.now().date()
-    habits = Habit.objects.filter(user=request.user)
+def heatmap_view(request):
+    # Option 1: Fetch data from the database
+    # data = Activity.objects.all().values('date', 'value')
+    # df = pd.DataFrame(data)
+    # df = df.rename(columns={'date': 'ds'})  # Rename to match article
 
-    if not habits.exists():
-        return render(request, "no_habits.html")
+    # Option 2: Generate dummy data (like the article)
+    dummy_start_date = "2024-01-01"
+    dummy_end_date = "2025-03-11"  # Up to today, per current date
+    df = pd.DataFrame(
+        {
+            "ds": pd.date_range(dummy_start_date, dummy_end_date),
+            "value": np.random.randint(
+                low=0,
+                high=30,
+                size=(
+                    pd.to_datetime(dummy_end_date) - pd.to_datetime(dummy_start_date)
+                ).days
+                + 1,
+            ),
+        }
+    )
 
-    if request.method == "POST":
-        for habit in habits:
-            form = HabitEntryForm(request.POST, prefix=str(habit.id))
-            if form.is_valid():
-                entry, created = HabitEntry.objects.get_or_create(
-                    user=request.user,
-                    habit=habit,
-                    created__date=today,
-                    defaults={"completed": form.cleaned_data["completed"]},
-                )
-                if not created:
-                    entry.completed = form.cleaned_data["completed"]
-                    entry.save()
-        return redirect("habit_heatmap")
+    # Create the Plotly calendar heatmap
+    fig = calplot(
+        df,
+        x="ds",
+        y="value",
+        dark_theme=True,  # Dark theme like the article's example
+        gap=0,  # Zero gap option
+        colorscale="purples",  # Custom colorscale
+        years_title=True,  # Show year titles
+        month_lines_width=3,  # Customize month lines
+        month_lines_color="#fff",
+    )
 
-    forms = {habit: HabitEntryForm(prefix=str(habit.id)) for habit in habits}
-    context = {"forms": forms, "today": today}
-    return render(request, "daily_habit_input.html", context)
+    # Convert the figure to HTML for the template
+    plot_div = fig.to_html(full_html=False)
+
+    return render(request, "heatmap.html", {"plot_div": plot_div})
 
 
-@login_required
-def habit_heatmap(request):
-    habits = Habit.objects.filter(user=request.user)
-    if not habits.exists():
-        return render(request, "no_habits.html")
+# @login_required
+# def daily_habit_input(request):
+#     habits = Habit.objects.filter(user=request.user)
 
-    # Define date range: past year to now
-    now = timezone.now()
-    start_date = now - timezone.timedelta(days=364)
-    date_range = utils.date_range(start_date, now)
+#     if not habits.exists():
+#         return render(request, "no_habits.html")
 
-    # Calculate the number of weeks (columns) needed
-    num_days = len(date_range)  # 365 days
-    num_weeks = (num_days + 6) // 7  # Ceiling division to get full weeks (52 or 53)
+#     selected_date = None
+#     if request.method == "POST":
+#         for habit in habits:
+#             form = HabitEntryForm(request.POST, prefix=str(habit.id))
+#             if form.is_valid():
+#                 selected_date = form.cleaned_data["date"]
+#                 entry, created = HabitEntry.objects.get_or_create(
+#                     user=request.user,
+#                     habit=habit,
+#                     created__date=selected_date,
+#                     defaults={
+#                         "completed": form.cleaned_data["completed"],
+#                         "created": timezone.make_aware(
+#                             timezone.datetime.combine(
+#                                 selected_date, timezone.datetime.min.time()
+#                             )
+#                         ),
+#                     },
+#                 )
+#                 if not created:
+#                     entry.completed = form.cleaned_data["completed"]
+#                     entry.created = timezone.make_aware(
+#                         timezone.datetime.combine(
+#                             selected_date, timezone.datetime.min.time()
+#                         )
+#                     )
+#                     entry.save()
+#         if selected_date:
+#             return redirect("habit_heatmap")
 
-    # Generate day names starting from the first day
-    first_day = date_range[0].weekday()
-    day_names = list(calendar.day_name)
-    days = day_names[first_day:] + day_names[:first_day]
+#     forms = {
+#         habit: HabitEntryForm(
+#             initial={"date": timezone.now().date()}, prefix=str(habit.id)
+#         )
+#         for habit in habits
+#     }
+#     context = {"forms": forms, "selected_date": selected_date or timezone.now().date()}
+#     return render(request, "daily_habit_input.html", context)
 
-    # X-axis labels (start of each week)
-    x_labels = [date_range[i].date() for i in range(0, num_days, 7)]
 
-    # Generate a heatmap for each habit
-    habit_charts = []
-    for habit in habits:
-        entries = HabitEntry.objects.filter(user=request.user, habit=habit).order_by(
-            "created"
-        )
+# @login_required
+# def habit_heatmap(request):
+#     habits = Habit.objects.filter(user=request.user)
+#     if not habits.exists():
+#         return render(request, "no_habits.html")
 
-        # Initialize 2D list with zeros for 7 rows (days) and num_weeks columns
-        counts = [[0] * num_weeks for _ in range(7)]
+#     now = timezone.now()
+#     start_date = now - timezone.timedelta(days=364)
+#     date_range = utils.date_range(start_date, now)
 
-        # Populate counts by mapping dates to week and day indices
-        for i, dt in enumerate(date_range):
-            week_number = i // 7
-            day_number = dt.weekday()
-            entry = entries.filter(created__date=dt.date()).first()
-            counts[day_number][week_number] = 1 if entry and entry.completed else 0
+#     habit_charts = []
+#     for habit in habits:
+#         # Fetch all entries for this habit
+#         entries = HabitEntry.objects.filter(user=request.user, habit=habit).order_by(
+#             "created"
+#         )
 
-        # Create Plotly heatmap
-        fig = px.imshow(
-            counts,
-            x=x_labels,
-            y=days,
-            color_continuous_scale=["white", "green"],
-            height=320,
-            width=1300,
-        )
-        fig.update_traces(xgap=5, ygap=5)
-        fig.update_layout(
-            plot_bgcolor="white", title_text=habit.name
-        )  # Add habit name as title
+#         # Convert to DataFrame
+#         data = {
+#             "date": [entry.created.date() for entry in entries],
+#             "value": [1 if entry.completed else 0 for entry in entries],
+#         }
+#         df = pd.DataFrame(data)
 
-        # Convert to HTML and store with habit name
-        chart_html = fig.to_html()
-        habit_charts.append({"name": habit.name, "chart": chart_html})
+#         # Create calendar heatmap with GitHub-like style and article customizations
+#         fig = plotly_calplot.calplot(
+#             df,
+#             x="date",
+#             y="value",
+#             colorscale=[
+#                 (0.0, "#ebedf0"),  # 0 contributions (gray)
+#                 (0.5, "#ebedf0"),  # Transition point
+#                 (0.5, "#c6e48b"),  # 1+ contributions (light green)
+#                 (1.0, "#c6e48b"),  # Max value (light green)
+#             ],
+#             showscale=True,
+#             years_title=True,
+#             gap=0,  # No gaps between cells, as in the article's "Zero Gap" example
+#             # height=320,
+#             # width=1300,
+#             month_lines_color="#fff",  # White month lines for dark theme
+#             month_lines_width=3,
+#             # dark_theme=True,  # Apply dark theme as shown in the article
+#         )
 
-    context = {"habit_charts": habit_charts}
-    return render(request, "habit_heatmap.html", context)
+#         # Customize layout
+#         fig.update_layout(
+#             title_text=habit.name,
+#             margin=dict(t=40, b=40, l=40, r=40),
+#             xaxis=dict(
+#                 tickangle=0,
+#                 tickfont=dict(size=12, color="#fff"),  # White text for dark theme
+#                 showgrid=False,
+#             ),
+#             yaxis=dict(
+#                 tickmode="array",
+#                 tickvals=[0, 1, 2, 3, 4, 5, 6],
+#                 ticktext=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+#                 tickfont=dict(size=12, color="#fff"),  # White text for dark theme
+#                 showgrid=False,
+#             ),
+#             showlegend=False,
+#         )
+
+#         # Add a border around the plot
+#         fig.update_layout(
+#             shapes=[
+#                 dict(
+#                     type="rect",
+#                     xref="paper",
+#                     yref="paper",
+#                     x0=0,
+#                     y0=0,
+#                     x1=1,
+#                     y1=1,
+#                     line=dict(color="#fff", width=1),  # White border for dark theme
+#                 )
+#             ]
+#         )
+
+#         # Hide mode bar
+#         chart_html = fig.to_html(config={"displayModeBar": False})
+#         habit_charts.append({"name": habit.name, "chart": chart_html})
+
+#     context = {"habit_charts": habit_charts}
+#     return render(request, "habit_heatmap.html", context)

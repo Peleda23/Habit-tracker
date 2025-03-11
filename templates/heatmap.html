@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendar Heatmap</title>
+    <style>
+        body {
+            background-color: #1a1a1a; /* Dark background to match theme */
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .heatmap-container {
+            margin: 20px auto;
+            width: 90%;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Interactive Calendar Heatmap</h1>
+    <div class="heatmap-container">
+        {{ plot_div|safe }}
+    </div>
+</body>
+</html>

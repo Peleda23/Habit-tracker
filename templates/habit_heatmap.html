@@ -3,6 +3,44 @@
 {% block content %}
 
 
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #ffffff;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+    .habit-container {
+        margin-bottom: 60px;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        text-align: center;
+    }
+    h2 {
+        margin-top: 0;
+        color: #444;
+        font-size: 1.5em;
+    }
+    .link-container {
+        text-align: center;
+        margin-top: 30px;
+    }
+    a {
+        color: #007bff;
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+<body>
 <h1>My Habit Tracker</h1>
 {% if habit_charts %}
     {% for habit in habit_charts %}
@@ -14,6 +52,8 @@
 {% else %}
     <p>No habit data to display.</p>
 {% endif %}
-<p><a href="{% url 'daily_habit_input' %}">Log Today's Habits</a></p>
+<div class="link-container">
+    <p><a href="{% url 'daily_habit_input' %}">Log Today's Habits</a></p>
+</div>
    
 {% endblock %}
