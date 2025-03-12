@@ -14,4 +14,4 @@ class HabitEntryForm(forms.ModelForm):
 
     class Meta:
         model = HabitEntry
-        fields = ["date", "completed"]
+        fields = ["date"]

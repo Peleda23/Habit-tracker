@@ -8,7 +8,7 @@ class HabitAdmin(admin.ModelAdmin):
 
 
 class HabitEntryAdmin(admin.ModelAdmin):
-    list_display = ["user", "habit", "created", "modified", "completed"]
+    list_display = ["habit", "date", "value"]
 
 
 admin.site.register(Habit, HabitAdmin)

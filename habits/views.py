@@ -14,27 +14,14 @@ import plotly.graph_objects as go
 
 def heatmap_view(request):
     # Option 1: Fetch data from the database
-    # data = Activity.objects.all().values('date', 'value')
-    # df = pd.DataFrame(data)
-    # df = df.rename(columns={'date': 'ds'})  # Rename to match article
+    data = HabitEntry.objects.all().values("date", "value")
 
-    # Option 2: Generate dummy data (like the article)
-    current_year = datetime.datetime.now().year
-    dummy_start_date = f"{current_year}-01-01"
-    dummy_end_date = datetime.datetime.now()  # Up to today, per current date
-    df = pd.DataFrame(
-        {
-            "ds": pd.date_range(dummy_start_date, dummy_end_date),
-            "value": np.random.randint(
-                low=0,
-                high=30,
-                size=(
-                    pd.to_datetime(dummy_end_date) - pd.to_datetime(dummy_start_date)
-                ).days
-                + 1,
-            ),
-        }
-    )
+    df = pd.DataFrame(data)
+
+    # Sutvarko data kad nebūtu sekundžiu, su sekundėm neatvaizduoja
+    df["date"] = pd.to_datetime(df["date"]).dt.date
+    df = df.rename(columns={"date": "ds"})  # Rename to match article
+    print(df)
 
     # Create the Plotly calendar heatmap
     fig = calplot(
@@ -43,10 +30,13 @@ def heatmap_view(request):
         y="value",
         dark_theme=False,  # Dark theme like the article's example
         gap=0,  # Zero gap option
-        colorscale="purples",  # Custom colorscale
+        colorscale=[
+            (0, "white"),
+            (1, "green"),
+        ],  # Custom colorscale
         years_title=True,  # Show year titles
-        month_lines_width=3,  # Customize month lines
-        month_lines_color="#fff",
+        month_lines_width=1,  # Customize month lines
+        month_lines_color="black",
     )
 
     # Convert the figure to HTML for the template
