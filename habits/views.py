@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
 from .models import Habit, HabitEntry
 from .forms import HabitEntryForm
 import numpy as np
-import datetime
+
 
 # from . import utils
 from plotly_calplot import calplot
@@ -12,10 +11,12 @@ import pandas as pd
 import plotly.graph_objects as go
 
 
+@login_required
 def heatmap_view(request):
     # Option 1: Fetch data from the database
     data = HabitEntry.objects.all().values("date", "value")
-
+    # Consider filtering by user or date range
+    # data = HabitEntry.objects.filter(user=request.user).values("date", "value")
     df = pd.DataFrame(data)
 
     # Sutvarko data kad nebūtu sekundžiu, su sekundėm neatvaizduoja
