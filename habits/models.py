@@ -6,7 +6,7 @@ from datetime import datetime
 
 class Habit(models.Model):
     name = models.CharField(max_length=100)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=False)
     description = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)  # Added manually
     modified = models.DateTimeField(auto_now=True)  # Added manually
@@ -20,6 +20,7 @@ class Habit(models.Model):
 
 class HabitEntry(models.Model):
     habit = models.ForeignKey(Habit, on_delete=models.CASCADE)
+    user = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE)
     date = models.DateTimeField(default=datetime.now, blank=True)  # Added manually
     value = models.IntegerField(default=0)  # Added manually
 

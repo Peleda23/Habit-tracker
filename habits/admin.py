@@ -9,17 +9,9 @@ class HabitAdmin(admin.ModelAdmin):
 
 
 class HabitEntryAdmin(admin.ModelAdmin):
-    def get_user(self, obj):
-        return obj.habit.user
-
-    get_user.short_description = "User"
     model = HabitEntry
-    list_display = ["get_user", "habit", "date", "value"]
-
-    def save_model(self, request, obj, form, change):
-        # Automatically set the user based on the selected habit
-        obj.user = obj.habit.user
-        super().save_model(request, obj, form, change)
+    list_display = ["user", "habit", "date", "value"]
+    list_filter = ["habit__user"]
 
 
 admin.site.register(Habit, HabitAdmin)
