@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from accounts.models import CustomUser
+from datetime import datetime
 
 
 class Habit(models.Model):
@@ -19,7 +20,7 @@ class Habit(models.Model):
 
 class HabitEntry(models.Model):
     habit = models.ForeignKey(Habit, on_delete=models.CASCADE)
-    date = models.DateTimeField(default=timezone.now)  # Added manually
+    date = models.DateTimeField(default=datetime.now, blank=True)  # Added manually
     value = models.IntegerField(default=0)  # Added manually
 
     def __str__(self):

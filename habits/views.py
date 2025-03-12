@@ -15,14 +15,20 @@ import plotly.graph_objects as go
 def heatmap_view(request):
     # Option 1: Fetch data from the database
     data = HabitEntry.objects.all().values("date", "value")
+    # try:
+    #     testas = data[0]
+    #     print(testas)
+
+    # except KeyError as ke:
+    #     print("Key Not Found in Employee Dictionary:", ke)
     # Consider filtering by user or date range
     # data = HabitEntry.objects.filter(user=request.user).values("date", "value")
     df = pd.DataFrame(data)
 
     # Sutvarko data kad nebūtu sekundžiu, su sekundėm neatvaizduoja
     df["date"] = pd.to_datetime(df["date"]).dt.date
+
     df = df.rename(columns={"date": "ds"})  # Rename to match article
-    print(df)
 
     # Create the Plotly calendar heatmap
     fig = calplot(
