@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Habit, HabitEntry
 from .forms import HabitEntryForm
@@ -13,16 +13,18 @@ import plotly.graph_objects as go
 
 @login_required
 def heatmap_view(request):
-    # Option 1: Fetch data from the database
-    data = HabitEntry.objects.all().values("date", "value")
-    # try:
-    #     testas = data[0]
-    #     print(testas)
+    current_user = request.user
+    user_habits = Habit.objects.filter(user=current_user)
+    # Renkam informacija iš duomenų bazes
+    data = HabitEntry.objects.filter(user=current_user).values("date", "value")
 
-    # except KeyError as ke:
-    #     print("Key Not Found in Employee Dictionary:", ke)
-    # Consider filtering by user or date range
-    # data = HabitEntry.objects.filter(user=request.user).values("date", "value")
+    if not data.exists():
+        context = {
+            "plot_div": "<p>No habit entries found.</p>",
+            "user": current_user,
+            "habit": user_habits,
+        }
+        return render(request, "heatmap.html", context)
     df = pd.DataFrame(data)
 
     # Sutvarko data kad nebūtu sekundžiu, su sekundėm neatvaizduoja
@@ -48,5 +50,6 @@ def heatmap_view(request):
 
     # Convert the figure to HTML for the template
     plot_div = fig.to_html(full_html=False)
+    context = {"plot_div": plot_div, "user": current_user, "habit": user_habits}
 
-    return render(request, "heatmap.html", {"plot_div": plot_div})
+    return render(request, "heatmap.html", context)
