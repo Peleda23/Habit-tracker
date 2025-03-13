@@ -1,21 +1,14 @@
 {% extends "base.html" %}%
 {% block title %} Calendar Heatmap {% endblock title %}
 {% block content %}   
-    <style>
-        body {
-             /* Dark background to match theme */
-            color: #fff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        .heatmap-container {
-            margin: 20px auto;
-            width: 90%;
-        }
-    </style>
-
-    <h1>My Interactive Calendar Heatmap</h1>
-    <div class="heatmap-container">
+    
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user }}. Thanks for logging in.</p>
+    <div>
         {{ plot_div|safe }}
     </div>
+{% else %}
+    <p>Welcome, new user. Please log in.</p>
+{% endif %}
+    
 {% endblock content %}
