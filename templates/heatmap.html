@@ -4,9 +4,16 @@
     
 {% if user.is_authenticated %}
     <p>Welcome, {{ user }}. Thanks for logging in.</p>
-    <div>
-        {{ plot_div|safe }}
-    </div>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% else %}
+        {% for item in habit_heatmaps %}
+            <div class="habit-container">
+                <h2>{{ item.habit_name }}</h2>
+                {{ item.plot_div | safe }}
+            </div>
+        {% endfor %}
+    {% endif %}
 {% else %}
     <p>Welcome, new user. Please log in.</p>
 {% endif %}
