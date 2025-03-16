@@ -4,9 +4,9 @@ from .models import HabitEntry, Habit
 
 
 class HabitEntryForm(forms.ModelForm):
-    completed = forms.BooleanField(
+    value = forms.IntegerField(
         label="Did you do this habit on this date?",
-        required=False,
+        required=0,
         widget=forms.CheckboxInput,
     )
     date = forms.DateField(
@@ -15,10 +15,10 @@ class HabitEntryForm(forms.ModelForm):
 
     class Meta:
         model = HabitEntry
-        fields = ["date"]
+        fields = ["date", "value"]
 
 
 class HabitForm(ModelForm):
     class Meta:
         model = Habit
-        fields = "__all__"
+        fields = ["name", "description"]

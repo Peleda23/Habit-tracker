@@ -12,6 +12,7 @@
                 <h2>{{ item.habit_name }}</h2>
                 {{ item.plot_div | safe }}
             </div>
+            <a href="{% url "habit_add_entry" %}">Do you do this habit today?</a>
         {% endfor %}
     {% endif %}
 {% else %}

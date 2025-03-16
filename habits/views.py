@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Habit, HabitEntry
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 
-from .forms import HabitForm
+from .forms import HabitForm, HabitEntryForm
 import numpy as np
 
 from plotly_calplot import calplot
@@ -98,11 +98,29 @@ class UserHabitCreateView(LoginRequiredMixin, generic.CreateView):
     model = Habit
     form_class = HabitForm
     template_name = "habit_create_form.html"
+    # Formai užpildžius kur būsime nukreipti
     success_url = reverse_lazy("heatmap_view")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+
+class UserHabitCreateEntryView(
+    LoginRequiredMixin, UserPassesTestMixin, generic.CreateView
+):
+    model = HabitEntry
+    form_class = HabitEntryForm
+    template_name = "daily_habit_input.html"
+    # Formai užpildžius kur būsime nukreipti
+    success_url = reverse_lazy("heatmap_view")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
 
 
 # TODO Prideti forma, iprocio fiksavimui.
