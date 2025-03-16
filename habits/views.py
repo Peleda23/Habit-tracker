@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Habit, HabitEntry
+from django.views import generic
+from django.urls import reverse, reverse_lazy
 
-# from .forms import HabitEntryForm
+from .forms import HabitForm
 import numpy as np
 
 from plotly_calplot import calplot
@@ -89,3 +92,18 @@ def heatmap_view(request):
     }
 
     return render(request, "heatmap.html", context)
+
+
+class UserHabitCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Habit
+    form_class = HabitForm
+    template_name = "habit_create_form.html"
+    success_url = reverse_lazy("heatmap_view")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+# TODO Prideti forma, iprocio fiksavimui.
+# TODO Kekviena karta prisijungus paklaustu ar noriu pazymeti koki iproti.
