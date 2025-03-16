@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Create New Habit{% endblock %}
+{% block content %}
+
+    <h1>Create new habit.</h1>
+    <form method="post">
+        {% csrf_token %}
+
+            {{ form.as_p }}
+        
+        <button type="submit">Submit</button>
+    </form>
+    {% comment %} <p><a href="{% url 'habit_heatmap' %}">View Heatmap</a></p> {% endcomment %}
+{% endblock %}
