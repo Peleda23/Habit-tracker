@@ -1,5 +1,6 @@
 from django import forms
-from .models import HabitEntry
+from django.forms import ModelForm, HiddenInput, EmailField, DateTimeInput
+from .models import HabitEntry, Habit
 
 
 class HabitEntryForm(forms.ModelForm):
@@ -15,3 +16,9 @@ class HabitEntryForm(forms.ModelForm):
     class Meta:
         model = HabitEntry
         fields = ["date"]
+
+
+class HabitForm(ModelForm):
+    class Meta:
+        model = Habit
+        fields = "__all__"
