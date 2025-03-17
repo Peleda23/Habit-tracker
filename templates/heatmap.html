@@ -9,7 +9,7 @@
     {% else %}
         {% for item in habit_heatmaps %}
             <div class="habit-container">
-                <h2><a href="{% url 'habit_details' habit.id %}">{{ item.habit_name }}</a></h2>
+                <h2><a href="{% url 'habit_details' item.id %}">{{ item.habit_name }}</a></h2>
                 {{ item.plot_div | safe }}
             </div>
         

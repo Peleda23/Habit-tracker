@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Habit, HabitEntry
 from django.views import generic
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 
 from .forms import HabitForm, HabitEntryForm
 import numpy as np
@@ -81,6 +82,7 @@ def heatmap_view(request):
         # Įdedam habit varda ir calendoriu į lista
         habit_heatmaps.append(
             {
+                "id": habit.pk,
                 "habit_name": habit.name,
                 "plot_div": plot_div,
             }
@@ -112,20 +114,20 @@ class HabitDetailView(generic.DetailView):
     template_name = "habit_details.html"
 
 
-class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
-    model = HabitEntry
-    form_class = HabitEntryForm
-    template_name = "daily_habit_input.html"
-    # Formai užpildžius kur būsime nukreipti
-    success_url = reverse_lazy("heatmap_view")
+# class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
+#     model = HabitEntry
+#     form_class = HabitEntryForm
+#     template_name = "daily_habit_input.html"
+#     # Formai užpildžius kur būsime nukreipti
+#     success_url = reverse_lazy("heatmap_view")
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        form.instance.habit = Habit.objects.get(pk=self.kwargs["pk"])
-        return super().form_valid(form)
+#     def form_valid(self, form):
+#         form.instance.user = self.request.user
+#         form.instance.habit = Habit.objects.get(pk=self.kwargs["pk"])
+#         return super().form_valid(form)
 
-    # def test_func(self):
-    #     return self.get_object().user == self.request.user
+# def test_func(self):
+#     return self.get_object().user == self.request.user
 
 
 # TODO Prideti forma, iprocio fiksavimui.
