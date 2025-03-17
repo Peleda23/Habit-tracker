@@ -106,9 +106,13 @@ class UserHabitCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-class UserHabitCreateEntryView(
-    LoginRequiredMixin, UserPassesTestMixin, generic.CreateView
-):
+class HabitDetailView(generic.DetailView):
+    model = Habit
+    context_object_name = "habit"
+    template_name = "habit_details.html"
+
+
+class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
     model = HabitEntry
     form_class = HabitEntryForm
     template_name = "daily_habit_input.html"
@@ -117,10 +121,11 @@ class UserHabitCreateEntryView(
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        form.instance.habit = Habit.objects.get(pk=self.kwargs["pk"])
         return super().form_valid(form)
 
-    def test_func(self):
-        return self.get_object().user == self.request.user
+    # def test_func(self):
+    #     return self.get_object().user == self.request.user
 
 
 # TODO Prideti forma, iprocio fiksavimui.

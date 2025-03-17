@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}
+    Habit Details
+{% endblock title %}
+{% block content %}
+    <h2>{{ habit.name }}</h2>
+    <hr />
+    <div class="habit-container">
+        {{ plot_div | safe }}
+    </div>
+{% endblock %}
