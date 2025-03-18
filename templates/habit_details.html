@@ -8,4 +8,5 @@
     <div class="habit-container">
         {{ plot_div | safe }}
     </div>
+    <a href="{% url 'habit_add_entry' habit.id %}"><p>Check daily habit</p></a>
 {% endblock %}
