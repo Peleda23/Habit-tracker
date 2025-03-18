@@ -154,20 +154,17 @@ class HabitDetailView(generic.DetailView):
         return context
 
 
-# class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
-#     model = HabitEntry
-#     form_class = HabitEntryForm
-#     template_name = "daily_habit_input.html"
-#     # Formai užpildžius kur būsime nukreipti
-#     success_url = reverse_lazy("heatmap_view")
+class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
+    model = HabitEntry
+    form_class = HabitEntryForm
+    template_name = "daily_habit_input.html"
+    # Formai užpildžius kur būsime nukreipti
+    success_url = reverse_lazy("heatmap_view")
 
-#     def form_valid(self, form):
-#         form.instance.user = self.request.user
-#         form.instance.habit = Habit.objects.get(pk=self.kwargs["pk"])
-#         return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.habit = Habit.objects.get(pk=self.kwargs["pk"])
+        return super().form_valid(form)
 
-# def test_func(self):
-#     return self.get_object().user == self.request.user
-
-
-# TODO Paspaudus ant įpročio atvaizduotu kalendoriu.
+    def test_func(self):
+        return self.get_object().user == self.request.user
