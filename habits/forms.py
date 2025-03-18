@@ -4,9 +4,9 @@ from .models import HabitEntry, Habit
 
 
 class HabitEntryForm(forms.ModelForm):
-    value = forms.IntegerField(
+    value = forms.BooleanField(
         label="Did you do this habit on this date?",
-        required=0,
+        required=False,
         widget=forms.CheckboxInput,
     )
     date = forms.DateField(
