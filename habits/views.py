@@ -114,6 +114,45 @@ class HabitDetailView(generic.DetailView):
     template_name = "habit_details.html"
     success_url = reverse_lazy("heatmap_view")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        habit = self.get_object()
+        current_user = self.request.user
+
+        # Gauti įpročio įrašus
+        data = HabitEntry.objects.filter(user=current_user, habit=habit).values(
+            "date", "value"
+        )
+
+        if not data.exists():
+            context["plot_div"] = "<p>No entries for this habit.</p>"
+            return context
+
+        # Konvertuoti duomenis į pandas DataFrame
+        df = pd.DataFrame(data)
+        if df.empty or "date" not in df.columns or "value" not in df.columns:
+            context["plot_div"] = "<p>Invalid or empty data for this habit.</p>"
+            return context
+
+        df["date"] = pd.to_datetime(df["date"]).dt.date
+        df = df.rename(columns={"date": "ds"})  # Sutvarkome stulpelių pavadinimus
+
+        # Sugeneruoti Plotly kalendoriaus heatmap'ą
+        fig = calplot(
+            df,
+            x="ds",
+            y="value",
+            dark_theme=False,
+            gap=0,
+            colorscale=[(0, "white"), (1, "green")],
+            years_title=True,
+            month_lines_width=1,
+            month_lines_color="black",
+        )
+
+        context["plot_div"] = fig.to_html(full_html=False)
+        return context
+
 
 # class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
 #     model = HabitEntry
