@@ -112,6 +112,7 @@ class HabitDetailView(generic.DetailView):
     model = Habit
     context_object_name = "habit"
     template_name = "habit_details.html"
+    success_url = reverse_lazy("heatmap_view")
 
 
 # class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
@@ -130,5 +131,4 @@ class HabitDetailView(generic.DetailView):
 #     return self.get_object().user == self.request.user
 
 
-# TODO Prideti forma, iprocio fiksavimui.
-# TODO Kekviena karta prisijungus paklaustu ar noriu pazymeti koki iproti.
+# TODO Paspaudus ant įpročio atvaizduotu kalendoriu.
