@@ -11,9 +11,9 @@ urlpatterns = [
         views.HabitDetailView.as_view(),
         name="habit_details",
     ),
-    # path(
-    #     "habit/<int:pk>/add",
-    #     views.UserHabitCreateEntryView.as_view(),
-    #     name="habit_add_entry",
-    # ),
+    path(
+        "habit/<int:pk>/add",
+        views.UserHabitCreateEntryView.as_view(),
+        name="habit_add_entry",
+    ),
 ]
