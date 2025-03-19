@@ -56,11 +56,9 @@ def heatmap_view(request):
                 }
             )
             continue
-
         # Sutvarko data kad nebūtu sekundžiu, su sekundėm neatvaizduoja
         df["date"] = pd.to_datetime(df["date"]).dt.date
         df = df.rename(columns={"date": "ds"})  # Rename to match article
-
         # Create the Plotly calendar heatmap
         fig = calplot(
             df,
@@ -76,7 +74,6 @@ def heatmap_view(request):
             month_lines_width=1,  # Customize month lines
             month_lines_color="black",
         )
-
         # Convert the figure to HTML for the template
         plot_div = fig.to_html(full_html=False)
         # Įdedam habit varda ir calendoriu į lista
@@ -92,7 +89,6 @@ def heatmap_view(request):
         "habit_heatmaps": habit_heatmaps,
         "user": current_user,
     }
-
     return render(request, "heatmap.html", context)
 
 
@@ -162,3 +158,7 @@ class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
 
     def test_func(self):
         return self.get_object().user == self.request.user
+
+
+# TODO In habit details need to add description if no description.
+# TODO If there is description add edit button.
