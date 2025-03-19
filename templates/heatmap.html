@@ -12,8 +12,10 @@
                 <h2>
                     {% if item.id %}
                         <a href="{% url 'habit_details' item.id %}">{{ item.habit_name }}</a>
+                        
                     {% else %}
                         {{ item.habit_name }}
+                        <a href="{% url 'habit_add_entry' item.id %}"><p>Check daily habit</p></a>
                     {% endif %}
                 </h2>
                 
