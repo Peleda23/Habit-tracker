@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Habit, HabitEntry
 from django.views import generic
-from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
 from .forms import HabitForm, HabitEntryForm
@@ -40,6 +39,7 @@ def heatmap_view(request):
         if not data.exists():
             habit_heatmaps.append(
                 {
+                    "id": habit.pk,
                     "habit_name": habit.name,
                     "plot_div": "<p>No entries for this habit.</p>",
                 }
@@ -118,25 +118,20 @@ class HabitDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         habit = self.get_object()
         current_user = self.request.user
-
         # Gauti įpročio įrašus
         data = HabitEntry.objects.filter(user=current_user, habit=habit).values(
             "date", "value"
         )
-
         if not data.exists():
             context["plot_div"] = "<p>No entries for this habit.</p>"
             return context
-
         # Konvertuoti duomenis į pandas DataFrame
         df = pd.DataFrame(data)
         if df.empty or "date" not in df.columns or "value" not in df.columns:
             context["plot_div"] = "<p>Invalid or empty data for this habit.</p>"
             return context
-
         df["date"] = pd.to_datetime(df["date"]).dt.date
         df = df.rename(columns={"date": "ds"})  # Sutvarkome stulpelių pavadinimus
-
         # Sugeneruoti Plotly kalendoriaus heatmap'ą
         fig = calplot(
             df,
@@ -149,7 +144,6 @@ class HabitDetailView(generic.DetailView):
             month_lines_width=1,
             month_lines_color="black",
         )
-
         context["plot_div"] = fig.to_html(full_html=False)
         return context
 
