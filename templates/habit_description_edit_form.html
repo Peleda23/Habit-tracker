@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Habit Descriptiom Edit{% endblock %}
+{% block content %}
+
+    <h1>Log Your Habit for {{ habit.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+            {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}
