@@ -5,7 +5,7 @@ from .models import Habit, HabitEntry
 from django.views import generic
 from django.urls import reverse_lazy
 
-from .forms import HabitForm, HabitEntryForm
+from .forms import HabitForm, HabitEntryForm, HabitDescriptionForm
 import numpy as np
 
 from plotly_calplot import calplot
@@ -149,6 +149,21 @@ class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
     form_class = HabitEntryForm
     template_name = "daily_habit_input.html"
     # Formai užpildžius kur būsime nukreipti
+    success_url = reverse_lazy("heatmap_view")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.habit = Habit.objects.get(pk=self.kwargs["pk"])
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
+
+
+class UserHabitDescriptionEditView(LoginRequiredMixin, generic.UpdateView):
+    model = Habit
+    form_class = HabitDescriptionForm
+    template_name = "habit_description_edit_form.html"
     success_url = reverse_lazy("heatmap_view")
 
     def form_valid(self, form):
