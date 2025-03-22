@@ -5,7 +5,7 @@ from .models import Habit, HabitEntry
 from django.views import generic
 from django.urls import reverse_lazy
 
-from .forms import HabitForm, HabitEntryForm, HabitDescriptionForm
+from .forms import HabitForm, HabitEntryForm, HabitDescriptionEditForm
 import numpy as np
 
 from plotly_calplot import calplot
@@ -162,7 +162,7 @@ class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
 
 class UserHabitDescriptionEditView(LoginRequiredMixin, generic.UpdateView):
     model = Habit
-    form_class = HabitDescriptionForm
+    form_class = HabitDescriptionEditForm
     template_name = "habit_description_edit_form.html"
     success_url = reverse_lazy("heatmap_view")
 
@@ -176,4 +176,3 @@ class UserHabitDescriptionEditView(LoginRequiredMixin, generic.UpdateView):
 
 
 # TODO In habit details need to add description if no description.
-# TODO If there is description add edit button.
