@@ -24,6 +24,12 @@ class HabitForm(ModelForm):
         fields = ["name", "description"]
 
 
+class HabitDescriptionAddForm(ModelForm):
+    class Meta:
+        model = Habit
+        fields = ["description"]
+
+
 class HabitDescriptionEditForm(ModelForm):
     class Meta:
         model = Habit
