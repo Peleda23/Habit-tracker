@@ -5,7 +5,12 @@ from .models import Habit, HabitEntry
 from django.views import generic
 from django.urls import reverse_lazy
 
-from .forms import HabitForm, HabitEntryForm, HabitDescriptionEditForm
+from .forms import (
+    HabitForm,
+    HabitEntryForm,
+    HabitDescriptionEditForm,
+    HabitDescriptionAddForm,
+)
 import numpy as np
 
 from plotly_calplot import calplot
@@ -160,6 +165,21 @@ class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
         return self.get_object().user == self.request.user
 
 
+class UserHabitDescriptionAddView(LoginRequiredMixin, generic.UpdateView):
+    model = Habit
+    form_class = HabitDescriptionAddForm
+    template_name = "habit_description_add_form.html"
+    success_url = reverse_lazy("heatmap_view")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.habit = Habit.objects.get(pk=self.kwargs["pk"])
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
+
+
 class UserHabitDescriptionEditView(LoginRequiredMixin, generic.UpdateView):
     model = Habit
     form_class = HabitDescriptionEditForm
@@ -175,4 +195,5 @@ class UserHabitDescriptionEditView(LoginRequiredMixin, generic.UpdateView):
         return self.get_object().user == self.request.user
 
 
-# TODO In habit details need to add description if no description.
+# TODO Add delete button to delete habit.
+# TODO Add motivation qoutes on (main or habit detail)
