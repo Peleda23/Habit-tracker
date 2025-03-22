@@ -9,5 +9,8 @@
         {{ plot_div | safe }}
     </div>
     <a href="{% url 'habit_add_entry' habit.id %}"><p>Check daily habit</p></a>
+    {% if habit.description%}
     <p>{{ habit.description }}</p>
+    <a href="{% url 'habit_description_edit' habit.id %}"><p>Edit description</p></a>
+    {% endif %}
 {% endblock %}
