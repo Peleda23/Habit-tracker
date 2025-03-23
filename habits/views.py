@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Habit, HabitEntry
 from django.views import generic
 from django.urls import reverse_lazy
@@ -151,6 +151,7 @@ class HabitDetailView(generic.DetailView):
 
 class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
     model = HabitEntry
+    context_object_name = "habit"
     form_class = HabitEntryForm
     template_name = "daily_habit_input.html"
     # Formai užpildžius kur būsime nukreipti
@@ -195,5 +196,17 @@ class UserHabitDescriptionEditView(LoginRequiredMixin, generic.UpdateView):
         return self.get_object().user == self.request.user
 
 
-# TODO Add delete button to delete habit.
-# TODO Add motivation qoutes on (main or habit detail)
+class UserHabitDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Habit
+    success_url = reverse_lazy("heatmap_view")
+    context_object_name = "habit"
+    template_name = "habit_delete.html"
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
+
+
+# TODO Add delete button for habit description
+# TODO Add motivation qoutes on (main or habit detail).
+# TODO Why in forms templates don't show habits name.
+# TODO Show number of habit entrys in a year.
