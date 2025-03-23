@@ -3,16 +3,28 @@
     Habit Details
 {% endblock title %}
 {% block content %}
-    <h2>{{ habit }}</h2>
+<div class="card">
+    <div class="card-body">
+        <p>{{ quotes }}</p>
+        <p>{{ author }}</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+        <h2>{{ habit }}</h2>
     <hr />
     <div class="habit-container">
         {{ plot_div | safe }}
     </div>
+    </div>
+  </div>  
+    
     <a href="{% url 'habit_add_entry' habit.id %}"><p>Check daily habit</p></a>
 
     {% if habit.description %}
     <p>{{ habit.description }}</p>
     <a href="{% url 'habit_description_edit' habit.id %}"><p>Edit description</p></a>
+    
     {% else %}
     <a href="{% url 'habit_description_add' habit.id %}"><p>Add description</p></a>
     {% endif %}
