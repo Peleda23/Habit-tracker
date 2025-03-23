@@ -4,6 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Habit, HabitEntry
 from django.views import generic
 from django.urls import reverse_lazy
+import requests
+
 
 from .forms import (
     HabitForm,
@@ -145,7 +147,22 @@ class HabitDetailView(generic.DetailView):
             month_lines_width=1,
             month_lines_color="black",
         )
+
+        # Add the heatmap and quotes to the context
         context["plot_div"] = fig.to_html(full_html=False)
+
+        # Add quotes to the context
+        api_url = "https://api.api-ninjas.com/v1/quotes"
+        response = requests.get(
+            api_url, headers={"X-Api-Key": "2upTib173qiLhwUqbVRZtQ==GbDXZrXm3DIDHHYN"}
+        )
+        if response.status_code == requests.codes.ok:
+            data = response.json()
+            context["quotes"] = data[0]["quote"]
+            context["author"] = data[0]["author"]
+        else:
+            context["quotes"] = f"Error fetching quotes: {response.status_code}"
+
         return context
 
 
@@ -206,7 +223,5 @@ class UserHabitDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.Delet
         return self.get_object().user == self.request.user
 
 
-# TODO Add delete button for habit description
-# TODO Add motivation qoutes on (main or habit detail).
 # TODO Why in forms templates don't show habits name.
 # TODO Show number of habit entrys in a year.
