@@ -12,6 +12,11 @@ urlpatterns = [
         name="habit_details",
     ),
     path(
+        "habit/<int:pk>/delete_habit",
+        views.UserHabitDeleteView.as_view(),
+        name="habit_delete",
+    ),
+    path(
         "habit/<int:pk>/add",
         views.UserHabitCreateEntryView.as_view(),
         name="habit_add_entry",
