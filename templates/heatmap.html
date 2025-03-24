@@ -4,26 +4,22 @@
 {% block content %}   
     
 {% if user.is_authenticated %}
-    <p >Welcome, {{ user }}. Thanks for logging in.</p>
+    <p>Welcome, {{ user }}. Thanks for logging in.</p>
     {% if message %}
         <p>{{ message }}</p>
     {% else %}
-        {% for item in habit_heatmaps %}
-            <div class="habit-container">
-                <h2>
-                    {% if item.id %}
-                        <a href="{% url 'habit_details' item.id %}">{{ item.habit_name|title }}</a>
-                        
-                    {% else %}
-                        {{ item.habit_name|title }}
-                        <a href="{% url 'habit_add_entry' item.id %}"><p>Check daily habit</p></a>
-                    {% endif %}
-                </h2>
-                
-                {{ item.plot_div | safe }}
-            </div>
-        
+        <div class="cards-container">
+        {% for item in habit_names %}
+            <div class="card-flex grid text-center">
+                <div class="card-body g-col-6">
+                  <h5 class="card-title">{{ item.name|title }}</h5>
+                  <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="{% url 'habit_details' item.id %}"><button class="button-blue">Details</button></a>
+                </div>
+              </div>
         {% endfor %}
+        </div>
     {% endif %}
 {% else %}
     <p>Welcome, new user. Please log in.</p>
