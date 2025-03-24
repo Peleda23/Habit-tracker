@@ -1,12 +1,13 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}
     Habit Details
 {% endblock title %}
 {% block content %}
 <div class="card">
     <div class="card-body">
-        <p>{{ quotes }}</p>
-        <p>{{ author }}</p>
+        <p id="text-align-center"><i>{{ quotes }}</i></p>
+        <p id="text-align-right"><i>Author: {{ author }}</i></p>
     </div>
   </div>
   <div class="card">
@@ -19,14 +20,14 @@
     </div>
   </div>  
     
-    <a href="{% url 'habit_add_entry' habit.id %}"><p>Check daily habit</p></a>
+    <a href="{% url 'habit_add_entry' habit.id %}"><button class="button-blue">Check daily habit</button></a>
 
     {% if habit.description %}
     <p>{{ habit.description }}</p>
-    <a href="{% url 'habit_description_edit' habit.id %}"><p>Edit description</p></a>
+    <a href="{% url 'habit_description_edit' habit.id %}"><button class="button-blue">Edit description</button></a>
     
     {% else %}
-    <a href="{% url 'habit_description_add' habit.id %}"><p>Add description</p></a>
+    <a href="{% url 'habit_description_add' habit.id %}"><button class="button-blue">Add description</button></a>
     {% endif %}
-    <a href="{% url 'habit_delete' habit.id %}"><p>Delete Habit</p></a>
+    <a href="{% url 'habit_delete' habit.id %}"><button class="button-red">Delete Habit</button></a>
 {% endblock %}
