@@ -225,3 +225,4 @@ class UserHabitDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.Delet
 
 # TODO Why in forms templates don't show habits name.
 # TODO Show number of habit entrys in a year.
+# TODO On main page just to show habit name, then created, how many habits entrys have, last time habit entry was added.
