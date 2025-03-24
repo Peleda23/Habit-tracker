@@ -7,7 +7,7 @@
 }
 
 /* From Uiverse.io by Mhyar-nsi */ 
-button {
+.button-blue {
     background-color: #f3f7fe;
     color: #3b82f6;
     border: none;
@@ -18,9 +18,26 @@ button {
     transition: 0.3s;
 }
   
-button:hover {
+.button-blue:hover {
     background-color: #3b82f6;
     box-shadow: 0 0 0 5px #3b83f65f;
+    color: #fff;
+}
+
+.button-red {
+    background-color: #f3f7fe;
+    color: #f63b3b;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 200px;
+    height: 45px;
+    transition: 0.3s;
+}
+  
+.button-red:hover {
+    background-color: #f63b3b;
+    box-shadow: 0 0 0 5px #8705055f;
     color: #fff;
 }
   
