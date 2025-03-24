@@ -40,4 +40,46 @@
     box-shadow: 0 0 0 5px #8705055f;
     color: #fff;
 }
+
+/* styles.css */
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1rem;
+    padding: 1rem; /* Optional: adds some space around the container */
+}
+
+.card-flex {
+    width: 18rem;
+    margin: 0 auto; /* Centers the card if it doesn't fill the grid cell */
+}
+
+/* Optional: Additional styling for better appearance */
+.card-flex {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.card-title {
+    margin-bottom: 0.5rem;
+}
+
+.card-subtitle {
+    margin-bottom: 0.75rem;
+}
+
+.card-text {
+    margin-bottom: 1rem;
+}
+
+.card-link {
+    display: inline-block;
+    margin-right: 1rem;
+}
   
