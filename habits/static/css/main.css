@@ -1,0 +1,26 @@
+#text-align-right {
+    text-align: right;
+}
+
+#text-align-center {
+    text-align: center;
+}
+
+/* From Uiverse.io by Mhyar-nsi */ 
+button {
+    background-color: #f3f7fe;
+    color: #3b82f6;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 200px;
+    height: 45px;
+    transition: 0.3s;
+}
+  
+button:hover {
+    background-color: #3b82f6;
+    box-shadow: 0 0 0 5px #3b83f65f;
+    color: #fff;
+}
+  
