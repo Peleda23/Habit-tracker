@@ -5,6 +5,7 @@
     
 {% if user.is_authenticated %}
     <p>Welcome, {{ user }}. Thanks for logging in.</p>
+    <p>Total Habits: {{ total_habits }}</p>
     {% if message %}
         <p>{{ message }}</p>
     {% else %}
@@ -14,7 +15,16 @@
                 <div class="card-body g-col-6">
                   <h5 class="card-title">{{ item.name|title }}</h5>
                   <h6 class="card-subtitle mb-2 text-body-secondary">You have <strong>{{ item.entry_count }}</strong> entrys for this habit.</h6>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <p class="card-text">Your Habit was created {% if item.days_since_created > 0 %}
+                    {{ item.days_since_created }} 
+                    {% if item.days_since_created == 1 %}day{% else %}days{% endif %}
+                    and {{ item.hours_since_created }} 
+                    {% if item.hours_since_created == 1 %}hour{% else %}hours{% endif %} ago.
+                {% else %}
+                    {{ item.hours_since_created }} 
+                    {% if item.hours_since_created == 1 %}hour{% else %}hours{% endif %} ago.
+                {% endif %}</p>
+                <p class="card-text">Last entry was {{ item.days_since_last_entry }} days ago.</p>
                   <a href="{% url 'habit_details' item.id %}"><button class="button-blue">Details</button></a>
                 </div>
               </div>
