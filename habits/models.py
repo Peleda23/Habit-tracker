@@ -19,7 +19,7 @@ class Habit(models.Model):
 
 
 class HabitEntry(models.Model):
-    habit = models.ForeignKey(Habit, on_delete=models.CASCADE)
+    habit = models.ForeignKey(Habit, on_delete=models.CASCADE, related_name="entries")
     user = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE)
     date = models.DateTimeField(default=datetime.now, blank=True)  # Added manually
     value = models.IntegerField(default=0)  # Added manually

@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Habit, HabitEntry
 from django.views import generic
 from django.urls import reverse_lazy
+from django.db.models import Count
 import requests
 
 
@@ -26,7 +27,9 @@ def heatmap_view(request):
     current_user = request.user
 
     # Get all habits for the current user
-    user_habits = Habit.objects.filter(user=current_user)
+    user_habits = Habit.objects.filter(user=current_user).annotate(
+        entry_count=Count("entries")  # Default related name if not specified
+    )
 
     # If no habits exist, return empty page with message
     if not user_habits.exists():
@@ -38,7 +41,14 @@ def heatmap_view(request):
         return render(request, "heatmap.html", context)
 
     # Create list of habit names
-    habit_names = [{"id": habit.pk, "name": habit.name} for habit in user_habits]
+    habit_names = [
+        {
+            "id": habit.pk,
+            "name": habit.name,
+            "entry_count": habit.entry_count,
+        }
+        for habit in user_habits
+    ]
 
     # Prepare context for template
     context = {
