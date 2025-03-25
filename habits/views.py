@@ -4,7 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Habit, HabitEntry
 from django.views import generic
 from django.urls import reverse_lazy
-from django.db.models import Count
+from django.db.models import Count, Max
+from django.utils import timezone
 import requests
 
 
@@ -28,8 +29,12 @@ def heatmap_view(request):
 
     # Get all habits for the current user
     user_habits = Habit.objects.filter(user=current_user).annotate(
-        entry_count=Count("entries")  # Default related name if not specified
+        entry_count=Count("entries"),  # Default related name if not specified
+        last_entry_date=Max("entries__date"),
     )
+
+    # Calculate total number of habits
+    total_habits = user_habits.count()
 
     # If no habits exist, return empty page with message
     if not user_habits.exists():
@@ -37,8 +42,12 @@ def heatmap_view(request):
             "habit_names": [],
             "message": "No habits found.",
             "user": current_user,
+            "total_habits": 0,
         }
         return render(request, "heatmap.html", context)
+
+    # Current date for comparison
+    now = timezone.now()
 
     # Create list of habit names
     habit_names = [
@@ -46,6 +55,12 @@ def heatmap_view(request):
             "id": habit.pk,
             "name": habit.name,
             "entry_count": habit.entry_count,
+            "days_since_created": (now - habit.created).days,
+            "hours_since_created": ((now - habit.created).seconds // 3600)
+            % 24,  # Remaining hours
+            "days_since_last_entry": (now - habit.last_entry_date).days + 1
+            if habit.last_entry_date
+            else None,
         }
         for habit in user_habits
     ]
@@ -54,6 +69,7 @@ def heatmap_view(request):
     context = {
         "habit_names": habit_names,
         "user": current_user,
+        "total_habits": total_habits,
     }
 
     return render(request, "heatmap.html", context)
@@ -184,5 +200,5 @@ class UserHabitDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.Delet
 
 
 # TODO Why in forms templates don't show habits name.
-# TODO Show number of habit entrys in a year.
 # TODO On main page just to show habit name, then created, how many habits entrys have, last time habit entry was added.
+# TODO Add templates for forms.
