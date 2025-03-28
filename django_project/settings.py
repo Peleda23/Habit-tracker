@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "crispy_forms",
+    "crispy_bootstrap5",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -137,3 +139,5 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 # Po login ar logout busime nukreipti į home page.
 LOGIN_REDIRECT_URL = "heatmap_view"
 LOGOUT_REDIRECT_URL = "login"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"

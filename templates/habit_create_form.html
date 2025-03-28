@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Create New Habit{% endblock %}
+{% load crispy_forms_tags %} 
 {% block content %}
 
     <h1>Create new habit.</h1>
     <form method="post">
         {% csrf_token %}
 
-            {{ form.as_p }}
+            {{ form|crispy }}
         
         <button type="submit">Submit</button>
     </form>
