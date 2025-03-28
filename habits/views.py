@@ -200,4 +200,6 @@ class UserHabitDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.Delet
 
 
 # TODO Why in forms templates don't show habits name.
-# TODO Add profile picture
+# TODO Add profile picture.
+# TODO After adding entry or description return to habit details.
+# TODO Style calendar
