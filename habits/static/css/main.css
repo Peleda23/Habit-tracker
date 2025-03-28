@@ -16,6 +16,8 @@
     width: 200px;
     height: 45px;
     transition: 0.3s;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
   
 .button-blue:hover {
@@ -42,7 +44,9 @@
 }
 
 /* styles.css */
-
+.card {
+    margin: 1rem;
+}
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
