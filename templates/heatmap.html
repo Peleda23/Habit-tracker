@@ -4,7 +4,7 @@
 {% block content %}   
     
 {% if user.is_authenticated %}
-    <p>Welcome, {{ user }}. Thanks for logging in.</p>
+    <p>Welcome, {{ user|title }}. Thanks for logging in.</p>
     <p>Total Habits: {{ total_habits }}</p>
     {% if message %}
         <p>{{ message }}</p>
