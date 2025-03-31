@@ -117,7 +117,7 @@ class HabitDetailView(generic.DetailView):
             x="ds",
             y="value",
             dark_theme=False,
-            gap=0,
+            gap=2,
             colorscale=[(0, "white"), (1, "green")],
             years_title=True,
             month_lines_width=1,
@@ -155,6 +155,13 @@ class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
         form.instance.habit = Habit.objects.get(pk=self.kwargs["pk"])
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Fetch the habit object using the primary key from the URL
+        habit = Habit.objects.get(pk=self.kwargs["pk"])
+        context["habit_name"] = habit.name  # Add the habit name to the context
+        return context
+
     def test_func(self):
         return self.get_object().user == self.request.user
 
@@ -163,7 +170,7 @@ class UserHabitDescriptionAddView(LoginRequiredMixin, generic.UpdateView):
     model = Habit
     form_class = HabitDescriptionAddForm
     template_name = "habit_description_add_form.html"
-    success_url = reverse_lazy("heatmap_view")
+    success_url = reverse_lazy("habit_details")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -178,7 +185,7 @@ class UserHabitDescriptionEditView(LoginRequiredMixin, generic.UpdateView):
     model = Habit
     form_class = HabitDescriptionEditForm
     template_name = "habit_description_edit_form.html"
-    success_url = reverse_lazy("heatmap_view")
+    success_url = reverse_lazy("habit_details")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
