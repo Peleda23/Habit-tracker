@@ -3,7 +3,7 @@
 {% block title %}Daily Habit Input{% endblock %}
 {% block content %}
 
-    <h1>Log Your Habit for {{ habit.name }}</h1>
+    <h1>Log Your Habit for {{ habit_name }}</h1>
     <form method="post">
         {% csrf_token %}
             {{ form|crispy }}

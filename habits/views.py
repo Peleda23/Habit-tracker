@@ -170,7 +170,7 @@ class UserHabitDescriptionAddView(LoginRequiredMixin, generic.UpdateView):
     model = Habit
     form_class = HabitDescriptionAddForm
     template_name = "habit_description_add_form.html"
-    success_url = reverse_lazy("habit_details")
+    success_url = reverse_lazy("heatmap_view")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -185,7 +185,7 @@ class UserHabitDescriptionEditView(LoginRequiredMixin, generic.UpdateView):
     model = Habit
     form_class = HabitDescriptionEditForm
     template_name = "habit_description_edit_form.html"
-    success_url = reverse_lazy("habit_details")
+    success_url = reverse_lazy("heatmap_view")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
