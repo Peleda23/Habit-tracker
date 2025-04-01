@@ -219,5 +219,4 @@ class UserHabitDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.Delet
 
 
 # TODO Add profile picture.
-# TODO After adding entry or description return to habit details.
 # TODO Style calendar
