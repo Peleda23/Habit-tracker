@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Habit, HabitEntry
 from django.views import generic
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.db.models import Count, Max
 from django.utils import timezone
 import requests
@@ -155,6 +155,7 @@ class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
         form.instance.habit = Habit.objects.get(pk=self.kwargs["pk"])
         return super().form_valid(form)
 
+    # Displaying habits name.
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Fetch the habit object using the primary key from the URL
@@ -164,6 +165,10 @@ class UserHabitCreateEntryView(LoginRequiredMixin, generic.CreateView):
 
     def test_func(self):
         return self.get_object().user == self.request.user
+
+    # After submiting returning to habit details.
+    def get_success_url(self):
+        return reverse("habit_details", kwargs={"pk": self.kwargs["pk"]})
 
 
 class UserHabitDescriptionAddView(LoginRequiredMixin, generic.UpdateView):
@@ -180,6 +185,10 @@ class UserHabitDescriptionAddView(LoginRequiredMixin, generic.UpdateView):
     def test_func(self):
         return self.get_object().user == self.request.user
 
+    # After submiting returning to habit details
+    def get_success_url(self):
+        return reverse("habit_details", kwargs={"pk": self.object.id})
+
 
 class UserHabitDescriptionEditView(LoginRequiredMixin, generic.UpdateView):
     model = Habit
@@ -195,6 +204,9 @@ class UserHabitDescriptionEditView(LoginRequiredMixin, generic.UpdateView):
     def test_func(self):
         return self.get_object().user == self.request.user
 
+    def get_success_url(self):
+        return reverse("habit_details", kwargs={"pk": self.object.id})
+
 
 class UserHabitDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Habit
@@ -206,7 +218,6 @@ class UserHabitDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.Delet
         return self.get_object().user == self.request.user
 
 
-# TODO Why in forms templates don't show habits name.
 # TODO Add profile picture.
 # TODO After adding entry or description return to habit details.
 # TODO Style calendar
