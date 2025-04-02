@@ -17,9 +17,9 @@
               crossorigin="anonymous">
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'heatmap_view' %}">Habit Tracker</a>
+                <a class="navbar-brand" href="{% url 'heatmap_view' %}"><button class="button-blue">Habit Tracker</button></a>
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
@@ -35,7 +35,7 @@
                         {% if user.is_authenticated %}
                             
                             <li>
-                                <a href="{% url "user_create_habit" %}" class="nav-link px-2 link-dark">New Habit</a>
+                                <a href="{% url "user_create_habit" %}" class="nav-link px-2 link-dark"><button class="button-blue">New Habit</button></a>
                             </li>
                         </ul>
                         <div class="mr-auto">
