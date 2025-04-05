@@ -7,3 +7,6 @@ class CustomUser(AbstractUser):
         null=True,
         blank=True,
     )
+    picture = models.ImageField(
+        default="habits/profile_pics/default.png", upload_to="habits/profile_pics"
+    )
