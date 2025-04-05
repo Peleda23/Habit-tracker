@@ -218,5 +218,6 @@ class UserHabitDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.Delet
         return self.get_object().user == self.request.user
 
 
-# TODO Add profile picture.
-# TODO Style calendar
+# TODO Add profile picture and profile page.
+# TODO Style calendar.
+# TODO Why on creating profile, not adding picture.
