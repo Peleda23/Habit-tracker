@@ -120,10 +120,11 @@ class HabitDetailView(generic.DetailView):
             gap=2,
             colorscale=[(0, "white"), (1, "green")],
             years_title=True,
-            month_lines_width=1,
+            month_lines_width=0,
             month_lines_color="black",
         )
-
+        # Add background color
+        fig.update_layout(plot_bgcolor="#f2f2f2")
         # Add the heatmap and quotes to the context
         context["plot_div"] = fig.to_html(full_html=False)
 
