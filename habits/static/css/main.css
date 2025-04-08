@@ -66,9 +66,22 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.card-flex-2:hover {
+    border: 2px solid rgb(251, 127, 127);
+    border-radius: 4px;
+    box-shadow: 0 4px 4px rgb(251, 127, 127);
+}
+
+.card-flex-3:hover {
+    border: 2px solid rgb(2, 198, 2);
+    border-radius: 4px;
+    box-shadow: 0 4px 4px rgb(2, 198, 2);
+}
+
 .card-body {
     padding: 1rem;
 }
+
 
 .card-title {
     margin-bottom: 0.5rem;
