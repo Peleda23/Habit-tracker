@@ -118,7 +118,7 @@ class HabitDetailView(generic.DetailView):
             y="value",
             dark_theme=False,
             gap=2,
-            colorscale=[(0, "white"), (1, "green")],
+            colorscale=[(0, "white"), (1, "rgb(2, 198, 2)")],
             years_title=True,
             month_lines_width=0,
             month_lines_color="black",
