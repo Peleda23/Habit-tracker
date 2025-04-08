@@ -1,17 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} Calendar Heatmap {% endblock title %}
+{% block title %} Habit Heatmap {% endblock title %}
 {% block content %}   
     
 {% if user.is_authenticated %}
-    <p>Welcome, {{ user|title }}. Thanks for logging in.</p>
-    <p>Total Habits: {{ total_habits }}</p>
+    <p>Welcome, <b>{{ user|title }}</b>. Thanks for logging in.</p>
+    <p>Total Habits: <b>{{ total_habits }}</b></p>
     {% if message %}
         <p>{{ message }}</p>
     {% else %}
         <div class="cards-container">
         {% for item in habit_names %}
-            <div class="card-flex grid text-center">
+        {% if item.days_since_last_entry > 1 %}
+            <div class="card-flex card-flex-2 grid text-center">
+             {% else %} 
+             <div class="card-flex card-flex-3 grid text-center">
+                {% endif %}  
                 <div class="card-body g-col-6">
                   <h5 class="card-title">{{ item.name|title }}</h5>
                   <h6 class="card-subtitle mb-2 text-body-secondary">You have <strong>{{ item.entry_count }}</strong> entrys for this habit.</h6>
