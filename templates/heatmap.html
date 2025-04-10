@@ -4,8 +4,10 @@
 {% block content %}   
     
 {% if user.is_authenticated %}
+<div class="just-card">
     <p>Welcome, <b>{{ user|title }}</b>. Thanks for logging in.</p>
     <p>Total Habits: <b>{{ total_habits }}</b></p>
+</div>
     {% if message %}
         <p>{{ message }}</p>
     {% else %}
