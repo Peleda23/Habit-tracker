@@ -102,7 +102,7 @@ Finally, run the development server:
 
 ## Software Dependencies
 
-[Django](https://www.djangoproject.com/) – The web framework for perfectionists with deadlines. Django follows Python’s ["batteries included" philosophy](https://docs.python.org/3/tutorial/stdlib.html#tut-batteries-included) and ships with a variety of optional tools to solve common web development problems.
+[Django](https://www.djangoproject.com/) – The web framework for perfectionists with deadlines. 
 
 [Plotly-calplot](https://github.com/brunorosilva/plotly-calplot) – Makes it easier to visualize and customize time-relevant or time-series data with Plotly interaction.
 
