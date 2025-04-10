@@ -97,38 +97,39 @@ class HabitDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         habit = self.get_object()
         current_user = self.request.user
-        # Gauti įpročio įrašus
+
+        # Get habit entries
         data = HabitEntry.objects.filter(user=current_user, habit=habit).values(
             "date", "value"
         )
+
+        # Handle heatmap generation
         if not data.exists():
             context["plot_div"] = "<p>No entries for this habit.</p>"
-            return context
-        # Konvertuoti duomenis į pandas DataFrame
-        df = pd.DataFrame(data)
-        if df.empty or "date" not in df.columns or "value" not in df.columns:
-            context["plot_div"] = "<p>Invalid or empty data for this habit.</p>"
-            return context
-        df["date"] = pd.to_datetime(df["date"]).dt.date
-        df = df.rename(columns={"date": "ds"})  # Sutvarkome stulpelių pavadinimus
-        # Sugeneruoti Plotly kalendoriaus heatmap'ą
-        fig = calplot(
-            df,
-            x="ds",
-            y="value",
-            dark_theme=False,
-            gap=2,
-            colorscale=[(0, "white"), (1, "green")],
-            years_title=True,
-            month_lines_width=3,
-            month_lines_color="white",
-        )
-        # Add background color
-        fig.update_layout(plot_bgcolor="#f2f2f2")
-        # Add the heatmap and quotes to the context
-        context["plot_div"] = fig.to_html(full_html=False)
+        else:
+            # Convert data to pandas DataFrame
+            df = pd.DataFrame(data)
+            if df.empty or "date" not in df.columns or "value" not in df.columns:
+                context["plot_div"] = "<p>Invalid or empty data for this habit.</p>"
+            else:
+                df["date"] = pd.to_datetime(df["date"]).dt.date
+                df = df.rename(columns={"date": "ds"})
+                # Generate Plotly calendar heatmap
+                fig = calplot(
+                    df,
+                    x="ds",
+                    y="value",
+                    dark_theme=False,
+                    gap=2,
+                    colorscale=[(0, "white"), (1, "green")],
+                    years_title=True,
+                    month_lines_width=3,
+                    month_lines_color="white",
+                )
+                fig.update_layout(plot_bgcolor="#f2f2f2")
+                context["plot_div"] = fig.to_html(full_html=False)
 
-        # Add quotes to the context
+        # Fetch quotes regardless of heatmap data
         api_url = "https://api.api-ninjas.com/v1/quotes"
         response = requests.get(
             api_url, headers={"X-Api-Key": "2upTib173qiLhwUqbVRZtQ==GbDXZrXm3DIDHHYN"}
