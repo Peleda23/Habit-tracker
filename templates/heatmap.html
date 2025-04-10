@@ -13,31 +13,30 @@
     {% else %}
         <div class="cards-container">
         {% for item in habit_names %}
-        {% if item.days_since_last_entry > 1 or item.days_since_last_entry == None %}
-            <div class="card-flex card-flex-2 grid text-center">
-             {% else %} 
-             <div class="card-flex card-flex-3 grid text-center">
+            <a  href="{% url 'habit_details' item.id %}" class="card-link no-decoration">
+                {% if item.days_since_last_entry > 1 or item.days_since_last_entry == None %}
+                    <div class="card-flex card-flex-2 grid text-center">
+                {% else %} 
+                    <div class="card-flex card-flex-3 grid text-center">
                 {% endif %}  
-                <div class="card-body g-col-6">
-                  <h5 class="card-title">{{ item.name|title }}</h5>
-                  <h6 class="card-subtitle mb-2 text-body-secondary">You have <strong>{{ item.entry_count }}</strong> entrys for this habit.</h6>
-                  <p class="card-text">Your Habit was added {% if item.days_since_created > 0 %}
-                    {{ item.days_since_created }} 
-                    {% if item.days_since_created == 1 %}day{% else %}days{% endif %}
-                    and {{ item.hours_since_created }} 
-                    {% if item.hours_since_created == 1 %}hour{% else %}hours{% endif %} ago.
-                {% else %}
-                    {{ item.hours_since_created }} 
-                    {% if item.hours_since_created == 1 %}hour{% else %}hours{% endif %} ago.
-                {% endif %}</p>
-                {% if item.days_since_last_entry != None %}
-                <p class="card-text">Last entry was {{ item.days_since_last_entry }} days ago.</p>
-                {% endif %}
-                <div class="card-footer">
-                  <a href="{% url 'habit_details' item.id %}"><button class="button-blue">Details</button></a>
+                    <div class="card-body g-col-6">
+                        <h5 class="card-title">{{ item.name|title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">You have <strong>{{ item.entry_count }}</strong> entrys for this habit.</h6>
+                        <p class="card-text">Your Habit was added {% if item.days_since_created > 0 %}
+                            {{ item.days_since_created }} 
+                            {% if item.days_since_created == 1 %}day{% else %}days{% endif %}
+                            and {{ item.hours_since_created }} 
+                            {% if item.hours_since_created == 1 %}hour{% else %}hours{% endif %} ago.
+                        {% else %}
+                            {{ item.hours_since_created }} 
+                            {% if item.hours_since_created == 1 %}hour{% else %}hours{% endif %} ago.
+                        {% endif %}</p>
+                        {% if item.days_since_last_entry != None %}
+                        <p class="card-text">Last entry was {{ item.days_since_last_entry }} days ago.</p>
+                        {% endif %}
+                    </div>
                 </div>
-                </div>
-              </div>
+            </a>
         {% endfor %}
         </div>
     {% endif %}
