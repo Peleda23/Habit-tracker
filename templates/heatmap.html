@@ -13,7 +13,7 @@
     {% else %}
         <div class="cards-container">
         {% for item in habit_names %}
-        {% if item.days_since_last_entry > 1 %}
+        {% if item.days_since_last_entry > 1 or item.days_since_last_entry == None %}
             <div class="card-flex card-flex-2 grid text-center">
              {% else %} 
              <div class="card-flex card-flex-3 grid text-center">
@@ -30,7 +30,9 @@
                     {{ item.hours_since_created }} 
                     {% if item.hours_since_created == 1 %}hour{% else %}hours{% endif %} ago.
                 {% endif %}</p>
+                {% if item.days_since_last_entry != None %}
                 <p class="card-text">Last entry was {{ item.days_since_last_entry }} days ago.</p>
+                {% endif %}
                   <a href="{% url 'habit_details' item.id %}"><button class="button-blue">Details</button></a>
                 </div>
               </div>
