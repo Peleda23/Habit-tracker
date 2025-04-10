@@ -21,9 +21,13 @@
   </div>  
     
     <a href="{% url 'habit_add_entry' habit.id %}"><button class="button-blue">Check daily habit</button></a>
-
     {% if habit.description %}
+    <div class="card">
+        <div class="card-body">
+    
     <p>{{ habit.description }}</p>
+        </div>
+    </div>    
     <a href="{% url 'habit_description_edit' habit.id %}"><button class="button-blue">Edit description</button></a>
     
     {% else %}
