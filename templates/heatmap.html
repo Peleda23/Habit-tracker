@@ -33,7 +33,9 @@
                 {% if item.days_since_last_entry != None %}
                 <p class="card-text">Last entry was {{ item.days_since_last_entry }} days ago.</p>
                 {% endif %}
+                <div class="card-footer">
                   <a href="{% url 'habit_details' item.id %}"><button class="button-blue">Details</button></a>
+                </div>
                 </div>
               </div>
         {% endfor %}
