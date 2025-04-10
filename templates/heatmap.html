@@ -15,11 +15,11 @@
         {% for item in habit_names %}
             <a  href="{% url 'habit_details' item.id %}" class="card-link no-decoration">
                 {% if item.days_since_last_entry > 1 or item.days_since_last_entry == None %}
-                    <div class="card-flex card-flex-2 grid text-center">
+                    <div class="card-flex card-flex-2 grid text-center card-centered">
                 {% else %} 
-                    <div class="card-flex card-flex-3 grid text-center">
+                    <div class="card-flex card-flex-3 grid text-center card-centered">
                 {% endif %}  
-                    <div class="card-body g-col-6">
+                    <div class="card-body g-col-6 card-body-centered">
                         <h5 class="card-title">{{ item.name|title }}</h5>
                         <h6 class="card-subtitle mb-2 text-body-secondary">You have <strong>{{ item.entry_count }}</strong> entrys for this habit.</h6>
                         <p class="card-text">Your Habit was added {% if item.days_since_created > 0 %}
