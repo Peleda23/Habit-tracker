@@ -118,10 +118,10 @@ class HabitDetailView(generic.DetailView):
             y="value",
             dark_theme=False,
             gap=2,
-            colorscale=[(0, "white"), (1, "rgb(2, 198, 2)")],
+            colorscale=[(0, "white"), (1, "green")],
             years_title=True,
-            month_lines_width=0,
-            month_lines_color="black",
+            month_lines_width=3,
+            month_lines_color="white",
         )
         # Add background color
         fig.update_layout(plot_bgcolor="#f2f2f2")
