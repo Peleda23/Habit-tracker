@@ -54,6 +54,14 @@
     padding: 1rem; /* Optional: adds some space around the container */
 }
 
+.just-card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: fit-content;
+    padding: 1rem;
+}
+
 .card-flex {
     width: 18rem;
     margin: 0 auto; /* Centers the card if it doesn't fill the grid cell */
