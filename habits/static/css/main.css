@@ -62,7 +62,14 @@
     padding: 1rem;
 }
 
-
+.no-decoration {
+    text-decoration: none;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
 
 /* Optional: Additional styling for better appearance */
 .card-flex {
@@ -103,6 +110,8 @@
 
 .card-title {
     margin-bottom: 0.5rem;
+    padding-bottom: 20px;
+    font-size: 30px;
 }
 
 .card-subtitle {
@@ -116,5 +125,16 @@
 .card-link {
     display: inline-block;
     margin-right: 1rem;
+}
+
+.card-centered { 
+    text-align: center;
+    cursor: pointer;
+}
+
+.card-body-centered { 
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
   
